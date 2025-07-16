@@ -4,6 +4,7 @@ import os, io
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
+import json
 
 app = Flask(__name__)
 
@@ -12,8 +13,11 @@ SCOPES = ['https://www.googleapis.com/auth/drive.file']
 SERVICE_ACCOUNT_FILE = 'credentials.json'
 FOLDER_ID = '1IbrABIQXpxd1xa-qSVvM9T4m9yJj-XBn'  # Reemplazar por tu carpeta en Drive
 
-credentials = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+
+credentials_info = json.loads(os.environ['GOOGLE_CREDS'])
+credentials = service_account.Credentials.from_service_account_info(
+    credentials_info, scopes=SCOPES)
+
 drive_service = build('drive', 'v3', credentials=credentials)
 
 @app.route('/upload', methods=['POST'])
